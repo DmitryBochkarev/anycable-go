@@ -61,7 +61,15 @@ func (ex *Executor) HandleCommand(s *node.Session, msg *common.Message) error {
 		// OK, we subscribed, now let's execute the query.
 		// First, deserialize the operation
 		operation := GraphqlQuery{}
-		err = json.Unmarshal([]byte(msg.Data), &operation)
+
+		data, ok := msg.Data.(string)
+
+		if !ok {
+			err = fmt.Errorf("GQL data must be a string, got %v", msg.Data)
+			return err
+		}
+
+		err = json.Unmarshal([]byte(data), &operation)
 
 		if err != nil {
 			return err
