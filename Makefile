@@ -94,7 +94,7 @@ run:
 	go run -ldflags $(LD_FLAGS) -tags "mrb gops" ./cmd/anycable-go/main.go
 
 build-protos:
-	protoc --proto_path=./etc --go_out=plugins=grpc:./protos ./etc/rpc.proto
+	protoc --proto_path=./etc --go_out=plugins=grpc:./protos --grpchan_out=./protos ./etc/rpc.proto
 	protoc --proto_path=./etc --go_out=./ac_protos ./etc/action_cable.proto
 
 bench:

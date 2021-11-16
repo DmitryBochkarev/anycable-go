@@ -6,6 +6,7 @@ require (
 	github.com/FZambia/sentinel v1.1.0
 	github.com/apex/log v1.9.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/fullstorydev/grpchan v1.0.2-0.20210924023933-8d2633e44524
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.0.4
@@ -31,6 +32,7 @@ require (
 )
 
 require (
+	github.com/jhump/protoreflect v1.5.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/stretchr/objx v0.3.0 // indirect
 	github.com/vmihailenco/tagparser/v2 v2.0.0 // indirect
