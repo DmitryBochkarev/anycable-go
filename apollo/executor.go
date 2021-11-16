@@ -37,9 +37,16 @@ func (ex *Executor) HandleCommand(s *node.Session, msg *common.Message) error {
 		// We automatically transform welcome message into connection ack,
 		// so, no need to send it manually.
 		// Also, we should pass payload, 'cause it may contain authentication data
+		if msg.Data != nil {
+			data, ok := msg.Data.(string)
 
-		if msg.Data != "" {
-			s.GetEnv().SetHeader(payloadHeader, msg.Data)
+			if !ok {
+				return fmt.Errorf("GQL data must be a string, got %v", msg.Data)
+			}
+
+			if data != "" {
+				s.GetEnv().SetHeader(payloadHeader, data)
+			}
 		}
 
 		res, err := ex.node.Authenticate(s)
@@ -80,8 +87,7 @@ func (ex *Executor) HandleCommand(s *node.Session, msg *common.Message) error {
 		data, ok := msg.Data.(string)
 
 		if !ok {
-			err = fmt.Errorf("GQL data must be a string, got %v", msg.Data)
-			return err
+			return fmt.Errorf("GQL data must be a string, got %v", msg.Data)
 		}
 
 		err = json.Unmarshal([]byte(data), &operation)
