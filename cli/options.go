@@ -117,6 +117,9 @@ func init() {
 	fs.StringVar(&defaults.Rails.TurboRailsKey, "turbo_rails_key", "", "")
 	fs.StringVar(&defaults.Rails.CableReadyKey, "cable_ready_key", "", "")
 
+	fs.StringVar(&defaults.WSPC.Path, "wspc_path", defaults.WSPC.Path, "")
+	fs.IntVar(&defaults.WSPC.Port, "wspc_port", defaults.WSPC.Port, "")
+
 	// CLI vars
 	fs.BoolVar(&showHelp, "h", false, "")
 	fs.BoolVar(&showVersion, "v", false, "")
@@ -227,6 +230,9 @@ OPTIONS
   --turbo_rails_key                      Enable Turbo Streams fastlane with the specified signing key, default: "" (disabled), env: ANYCABLE_TURBO_RAILS_KEY
   --cable_ready_key                      Enable CableReady fastlane with the specified signing key, default: "" (disabled), env: ANYCABLE_CABLE_READY_KEY
 
+  --wspc_path													   HTTP path for WebSocket RPC connections, default: "" (disabled), env: ANYCABLE_WSPC_PATH
+  --wspc_port													   HTTP port for WebSocket RPC connections, default: 0 (the same as the main HTTP port), env: ANYCABLE_WSPC_PORT
+
   -h                       This help screen
   -v                       Show version
 
@@ -257,6 +263,10 @@ Use metrics_rotate_interval instead.`)
 		if defaults.Metrics.RotateInterval == 0 {
 			defaults.Metrics.RotateInterval = defaults.Metrics.LogInterval
 		}
+	}
+
+	if defaults.WSPC.Port == 0 {
+		defaults.WSPC.Port = defaults.Port
 	}
 }
 

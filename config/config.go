@@ -10,6 +10,7 @@ import (
 	"github.com/anycable/anycable-go/rpc"
 	"github.com/anycable/anycable-go/server"
 	"github.com/anycable/anycable-go/ws"
+	"github.com/anycable/anycable-go/wspc"
 )
 
 // Config contains main application configuration
@@ -36,6 +37,7 @@ type Config struct {
 	Apollo               apollo.Config
 	JWT                  identity.JWTConfig
 	Rails                rails.Config
+	WSPC                 wspc.Config
 }
 
 // New returns a new empty config
@@ -52,5 +54,6 @@ func New() Config {
 	config.Apollo = apollo.NewConfig()
 	config.JWT = identity.NewJWTConfig("")
 	config.Rails = rails.NewConfig()
+	config.WSPC = wspc.NewConfig()
 	return config
 }

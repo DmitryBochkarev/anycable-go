@@ -21,10 +21,12 @@ import (
 	"github.com/anycable/anycable-go/pubsub"
 	"github.com/anycable/anycable-go/rails"
 	"github.com/anycable/anycable-go/router"
+	"github.com/anycable/anycable-go/rpc"
 	"github.com/anycable/anycable-go/server"
 	"github.com/anycable/anycable-go/utils"
 	"github.com/anycable/anycable-go/version"
 	"github.com/anycable/anycable-go/ws"
+	"github.com/anycable/anycable-go/wspc"
 	"github.com/apex/log"
 	"github.com/gorilla/websocket"
 	"github.com/syossan27/tebata"
@@ -152,6 +154,20 @@ func (r *Runner) Run() error {
 	}
 
 	r.shutdownables = append(r.shutdownables, metrics)
+
+	if config.WSPC.Enabled() {
+		wspcServer, werr := r.initWSPC(metrics, config)
+
+		if werr != nil {
+			return fmt.Errorf("!!! Failed to initialize WS RPC server !!!\n%v", werr)
+		}
+
+		go func() {
+			if wspcErr := wspcServer.Start(); wspcErr != nil {
+				r.errChan <- fmt.Errorf("!!! WS RPC server failed to start !!!\n%v", wspcErr)
+			}
+		}()
+	}
 
 	controller, err := r.initController(metrics, config)
 
@@ -429,4 +445,17 @@ func (r *Runner) setupSignalHandlers() {
 	}
 
 	t.Reserve(func() { r.errChan <- nil }) // nolint:errcheck
+}
+
+func (r *Runner) initWSPC(metrics *metrics.Metrics, config *config.Config) (*wspc.Server, error) {
+	ws, err := wspc.NewServer(metrics, &config.WSPC)
+
+	if err != nil {
+		return nil, err
+	}
+
+	// IMPORTANT: Update RPC dialer to use this service
+	config.RPC.DialFun = rpc.NewInprocessServiceDialer(ws, ws)
+
+	return ws, nil
 }
